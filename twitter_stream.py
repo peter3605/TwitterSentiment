@@ -24,15 +24,19 @@ class myListener(tweepy.StreamListener):
 			language = calculate_languages_ratios(text)
 			#add tweet to database
 			if(language):
-				is_pos,score = sa.calculate_sentiment(text)
-				mydb.insert_tweet_info(tweet['id'],tweet['user']['id'],tweet['created_at'],text,is_pos,score)
-
+				is_pos,score = sa.import_score(text)
+				#mydb.insert_tweet_info(tweet['id'],tweet['user']['id'],tweet['created_at'],text,is_pos,score)
+				file = open('data.txt','a')
+				file.write(str(score)+'\n')
+				file.close()
+			
 
 
 	def on_error(self, status):
 		print ('ERROR - '+str(status))
 
 
+		
 #log into twitter api and set up the twitter stream		
 def get_twitter_data():
 	auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
@@ -40,10 +44,11 @@ def get_twitter_data():
 	auth.set_access_token(access_token, access_token_secret)
 	api = tweepy.API(auth, wait_on_rate_limit=True, wait_on_rate_limit_notify=True, retry_count=10, retry_delay=5, retry_errors=5)
 
-	
 	streamListener = myListener()
 	myStream = tweepy.Stream(auth=api.auth, listener=streamListener)
 	myStream.sample()
+		
+		
 		
 #returns which ever language makes up the largest ratio of the text parameter
 def calculate_languages_ratios(text):
@@ -58,18 +63,20 @@ def calculate_languages_ratios(text):
 		common_elements = words_set.intersection(stopwords_set)
 
 		languages_ratios[language] = len(common_elements) # language "score"
-
+	isEnglish = False
 	if(max(languages_ratios, key=languages_ratios.get)=='english'):
 		for lang in languages_ratios:
 			if(lang!='english'):
 				if(languages_ratios[lang]==languages_ratios['english']):
-					return False
+					isEnglish = False
 				else:
 					if((languages_ratios['english']-languages_ratios[lang])>1):
-						return False
-		return True
+						isEnglish = False
+		isEnglish = True
 	else:
-		return False
+		isEnglish = False
+	return isEnglish
+		
 		
 		
 def main():

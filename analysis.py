@@ -1,5 +1,9 @@
 import math
 import re
+import requests
+import ast
+import json
+from string import ascii_letters
  
 emoticons_str = r"""
     (?:
@@ -7,38 +11,55 @@ emoticons_str = r"""
         [oO\-]? # Nose (optional)
         [D\)\]\(\]/\\OpP] # Mouth
     )"""
- 
 regex_str = [
     emoticons_str,
     r'<[^>]+>', # HTML tags
     r'(?:@[\w_]+)', # @-mentions
     r"(?:\#+[\w_]+[\w\'_\-]*[\w_]+)", # hash-tags
     r'http[s]?://(?:[a-z]|[0-9]|[$-_@.&amp;+]|[!*\(\),]|(?:%[0-9a-f][0-9a-f]))+', # URLs
- 
     r'(?:(?:\d+,?)+(?:\.?\d+)?)', # numbers
     r"(?:[a-z][a-z'\-_]+[a-z])", # words with - and '
     r'(?:[\w_]+)', # other words
     r'(?:\S)' # anything else
 ]
-    
-tokens_re = re.compile(r'('+'|'.join(regex_str)+')', re.VERBOSE | re.IGNORECASE)
-emoticon_re = re.compile(r'^'+emoticons_str+'$', re.VERBOSE | re.IGNORECASE)
  
-def tokenize(s):
-	return tokens_re.findall(s)
+def tokenize(text):
+	tokens_re = re.compile(r'('+'|'.join(regex_str)+')', re.VERBOSE | re.IGNORECASE)
+	return tokens_re.findall(text)
+	
  
-def process_tweet_text(s):
-	t = tokenize(s)
+def process_tweet_text(text):
+	t = tokenize(text)
 	tokens = []
 	for token in t:
 		tokens.append(token.lower())
-	string = " "
+
+	words = []
 	for word in tokens:
 		if(word!="rt"):
 			if(word.isalpha()):
-				string += (word + " ")
+				words.append(word)
+	allowed = set(ascii_letters)
+	output = [word for word in words if any(letter in allowed for letter in word)]
+	string = ''
+	for word in output:
+		string += (word + " ")
 	return string
 	
+def import_score(text):
+	url = ' http://text-processing.com/api/sentiment/'
+	dataLoad = {'text':text}
+	response = requests.post(url,data = dataLoad)
+	result = ast.literal_eval(response.content.decode("utf-8"))
+	label = result['label']
+	score = result['probability'][label]
+	isPos = 'O'
+	if(label == 'neg'):
+		score = score * -1
+		isPos = 'N'
+	elif(label == 'pos'):
+		isPos = 'Y'
+	return label,int(score*10)
 	
 	
 def calculate_sentiment(text):
@@ -57,12 +78,14 @@ def calculate_sentiment(text):
 				num -= 1
 				neg_words+=1
 	score = basic_sentiment(pos_words, neg_words)
+	isPos = ''
 	if(num>0):
-		return ('Y',score)
+		isPos = 'Y'
 	if(num==0):
-		return ('0',score)
+		isPos = 'O'
 	else:
-		return ('N',score)
+		isPos = 'N'
+	return isPos,score
 		
 def basic_sentiment(p,n):
 	score = math.log10(p+ 0.5)- math.log10(n+0.5)
