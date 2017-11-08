@@ -8,6 +8,7 @@ import sys
 from nltk.corpus import stopwords
 from database import Database
 import analysis as sa
+from graph import Graph
 
 
 #consumer key, consumer secret, access token, access secret.
@@ -83,10 +84,12 @@ def calculate_languages_ratios(text):
 def main(keyword):
 	global mydb
 	mydb = Database()
+	open("data.txt","w").close()
+	Graph()
 	get_twitter_data(keyword)
 	
 	
 	
 if __name__ == '__main__':
-	main(str(sys.argv[0]))
-
+	main(str(sys.argv[1]))
+	

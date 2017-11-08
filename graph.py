@@ -2,22 +2,27 @@ import matplotlib.pyplot as plt
 import matplotlib.animation as animation
 from matplotlib import style
 
+class Graph():
+	style.use('ggplot')
 
-style.use('fivethirtyeight')
+	fig, ax = plt.subplots()
+	ax.set_yticks([-20,0,20])
+	ax.set_xticks([])
 
-fig = plt.figure()
-ax1 = fig.add_subplot(1,1,1)
-def animate(i):
-	graph_data = open('data.txt','r').read()
-	lines = graph_data.split('\n')
-	xs = []
-	ys = []
-	x = 0
-	for line in lines:
-		x +=1
-		xs.append(x)
-		ys.append(line)
-	ax1.clear()
-	ax1.plot(xs, ys)
-ani = animation.FuncAnimation(fig, animate, interval=1000)
-plt.show()
+	def animate(i):
+		graph_data = open('data.txt','r').read()
+		lines = graph_data.split('\n')
+		xs = []
+		ys = []
+		x=0
+		for line in lines:
+			x+=1
+			xs.append(x)
+			ys.append(line)
+		ax.clear()
+		ax.plot(xs, ys)
+	ax.set_yticks([-20,0,20])
+	ax.tick_params(labelbottom='off')  
+	ax.tick_params(labelleft='off')  
+	ani = animation.FuncAnimation(fig, animate, interval=10)
+	plt.show()

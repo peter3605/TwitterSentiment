@@ -59,7 +59,7 @@ def import_score(text):
 		isPos = 'N'
 	elif(label == 'pos'):
 		isPos = 'Y'
-	return label,int(score*10)
+	return isPos,int(score*20)
 	
 	
 def calculate_sentiment(text):
