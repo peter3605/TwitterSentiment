@@ -77,7 +77,7 @@ def calculate_sentiment(text):
 			if(word == line):
 				num -= 1
 				neg_words+=1
-	score = basic_sentiment(pos_words, neg_words)
+	score = int(basic_sentiment(pos_words, neg_words)*20)
 	isPos = ''
 	if(num>0):
 		isPos = 'Y'

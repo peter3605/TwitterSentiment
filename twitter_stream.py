@@ -1,13 +1,14 @@
 import tweepy 
 import time
 import json
-import enchant
 import nltk
 import re
 import sys
 from nltk.corpus import stopwords
 from database import Database
 import analysis as sa
+from http.client import IncompleteRead
+
 
 
 #consumer key, consumer secret, access token, access secret.
@@ -50,7 +51,6 @@ def get_twitter_data(keyword):
 	myStream.filter(track = [keyword])
 		
 		
-		
 #returns which ever language makes up the largest ratio of the text parameter
 def calculate_languages_ratios(text):
 	languages_ratios = {}
@@ -81,12 +81,13 @@ def calculate_languages_ratios(text):
 		
 		
 def main(keyword):
-	global mydb
-	mydb = Database()
+	open("data.txt","w").close()
+	file = open('data.txt','a')
+	file.write(keyword+'\n')
+	file.close()
 	get_twitter_data(keyword)
 	
 	
-	
 if __name__ == '__main__':
-	main(str(sys.argv[0]))
-
+	main(sys.argv[1])
+	
