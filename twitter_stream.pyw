@@ -1,14 +1,13 @@
 import tweepy 
 import time
 import json
-import enchant
 import nltk
 import re
 import sys
 from nltk.corpus import stopwords
 from database import Database
 import analysis as sa
-from graph import Graph
+
 
 
 #consumer key, consumer secret, access token, access secret.
@@ -40,7 +39,7 @@ class myListener(tweepy.StreamListener):
 
 		
 #log into twitter api and set up the twitter stream		
-def get_twitter_data(keyword):
+def get_twitter_data():
 	auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
 	auth.secure = True
 	auth.set_access_token(access_token, access_token_secret)
@@ -48,7 +47,7 @@ def get_twitter_data(keyword):
 
 	streamListener = myListener()
 	myStream = tweepy.Stream(auth=api.auth, listener=streamListener)
-	myStream.filter(track = [keyword])
+	myStream.filter(locations = [119.1796875,5.3972734077,127.1337890625,18.9374644296])
 		
 		
 		
@@ -81,15 +80,15 @@ def calculate_languages_ratios(text):
 		
 		
 		
-def main(keyword):
+def main():
 	global mydb
-	mydb = Database()
+	#mydb = Database()
 	open("data.txt","w").close()
-	Graph()
-	get_twitter_data(keyword)
+	#exec(open('graph.py').read())
+	get_twitter_data()
 	
 	
 	
 if __name__ == '__main__':
-	main(str(sys.argv[1]))
+	main()
 	
