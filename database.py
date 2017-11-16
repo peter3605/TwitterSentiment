@@ -18,6 +18,6 @@ class Database():
 		 
 		self.cursor = self.db.cursor()
 
-	def insert_tweet_info(self,tweet_id,username,creation_date,text,is_text_positive,score):
-		self.cursor.execute("INSERT INTO project.tweet_info VALUES('%s','%s','%s','%s','%s','%s')" % (tweet_id,username,creation_date, text,is_text_positive,score))
+	def insert_tweet_info(self,tweet_id,username,creation_date,text,is_text_positive,score,key):
+		self.cursor.execute("INSERT INTO project.tweet_info VALUES('%s','%s','%s','%s','%s','%s','%s')" % (tweet_id,username,creation_date, text,is_text_positive,score,key))
 		self.db.commit()

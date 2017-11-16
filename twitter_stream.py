@@ -4,10 +4,11 @@ import json
 import nltk
 import re
 import sys
+import analysis as sa
 from nltk.corpus import stopwords
 from database import Database
-import analysis as sa
 from http.client import IncompleteRead
+from datetime import datetime
 
 
 
@@ -26,8 +27,13 @@ class myListener(tweepy.StreamListener):
 			language = calculate_languages_ratios(text)
 			#add tweet to database
 			if(language):
+				#get sentiment score
 				is_pos,score = sa.import_score(text)
-				#mydb.insert_tweet_info(tweet['id'],tweet['user']['id'],tweet['created_at'],text,is_pos,score)
+				
+				#insert tweet info into database
+				mydb.insert_tweet_info(tweet['id'],tweet['user']['id'],tweet['created_at'],text,is_pos,score,key)
+				
+				#insert sentiment score into data.txt
 				file = open('data.txt','a')
 				file.write(str(score)+'\n')
 				file.close()
@@ -48,7 +54,7 @@ def get_twitter_data(keyword):
 
 	streamListener = myListener()
 	myStream = tweepy.Stream(auth=api.auth, listener=streamListener)
-	myStream.filter(track = [keyword])
+	myStream.filter(track = keyword)
 		
 		
 #returns which ever language makes up the largest ratio of the text parameter
@@ -81,13 +87,33 @@ def calculate_languages_ratios(text):
 		
 		
 def main(keyword):
+	#create a string of all the search terms
+	global key 
+	key = ""
+	for k in keyword:
+		key += (k+", ")
+	key = key[:len(key)-2]
+	
+	#add the search terms to the first line of data.txt
 	open("data.txt","w").close()
 	file = open('data.txt','a')
-	file.write(keyword+'\n')
+	file.write(str(datetime.now())+"\n")
+	file.write(key+'\n')
 	file.close()
+	
+	#connect to database
+	global mydb
+	mydb = Database()
+	
+	#stream tweets
 	get_twitter_data(keyword)
 	
 	
 if __name__ == '__main__':
-	main(sys.argv[1])
+	#get all of the arguments as search terms
+	args = []
+	for arg in sys.argv:
+		if(arg.isalnum()):
+			args.append(arg)
+	main(args)
 	
