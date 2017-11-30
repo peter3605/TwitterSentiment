@@ -26,7 +26,7 @@ def animate(i):
 				total += int(line)
 			except:
 				continue
-			fig.suptitle("start time: "+lines[0]+"\n"+"search terms: "+lines[1]+"\n"+"number of tweets: "+str(x)+"\n"+"average sentiment score: "+str(total/x))
+			fig.suptitle("start time: "+lines[0]+"\n"+"search terms: "+lines[1]+"\n"+"number of tweets: "+str(x)+"\n"+"average sentiment score: "+str(format((total/x),".4f")))
 			xs.append(x)
 			ys.append(line)
 		x+=1
