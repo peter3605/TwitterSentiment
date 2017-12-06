@@ -5,6 +5,7 @@ import nltk
 import re
 import sys
 import analysis as sa
+import pickle
 from nltk.corpus import stopwords
 from database import Database
 from http.client import IncompleteRead
@@ -30,6 +31,8 @@ class myListener(tweepy.StreamListener):
 				#get sentiment score
 				is_pos,score = sa.import_score(text)
 				
+				add_tweet_to_list(text,is_pos)
+				
 				#insert tweet info into database
 				mydb.insert_tweet_info(tweet['id'],tweet['user']['id'],tweet['created_at'],text,is_pos,score,key)
 				
@@ -43,7 +46,21 @@ class myListener(tweepy.StreamListener):
 	def on_error(self, status):
 		print ('ERROR - '+str(status))
 
-
+def add_tweet_to_list(text,is_pos):
+	if(is_pos == 'Y'):
+		pos_tweets = []
+		with open("words/positive_tweets.txt", "rb") as myFile:
+			pos_tweets = pickle.load(myFile)
+		pos_tweets.append((text,'positive'))	
+		with open("words/positive_tweets.txt", "wb") as myFile:
+			pickle.dump(pos_tweets, myFile)
+	elif(is_pos == 'N'):
+		neg_tweets = []
+		with open("words/negative_tweets.txt", "rb") as myFile:
+			neg_tweets = pickle.load(myFile)
+		neg_tweets.append((text,'negative'))
+		with open("words/negative_tweets.txt", "wb") as myFile:
+			pickle.dump(neg_tweets, myFile)
 		
 #log into twitter api and set up the twitter stream		
 def get_twitter_data(keyword):
