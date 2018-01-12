@@ -4,6 +4,7 @@ import requests
 import ast
 import json
 from string import ascii_letters
+import sentiment
  
 emoticons_str = r"""
     (?:
@@ -46,23 +47,23 @@ def process_tweet_text(text):
 		string += (word + " ")
 	return string
 	
-def import_score(text):
+def sentiment_two(text):
 	url = ' http://text-processing.com/api/sentiment/'
 	dataLoad = {'text':text}
 	response = requests.post(url,data = dataLoad)
 	result = ast.literal_eval(response.content.decode("utf-8"))
 	label = result['label']
 	score = result['probability'][label]
-	isPos = 'O'
+	is_pos = 'O'
 	if(label == 'neg'):
 		score = score * -1
-		isPos = 'N'
+		is_pos = 'N'
 	elif(label == 'pos'):
-		isPos = 'Y'
-	return isPos,int(score*20)
+		is_pos = 'Y'
+	return is_pos,int(score*20)
 	
 	
-def calculate_sentiment(text):
+def sentiment_one(text):
 	num = 0
 	pos_words = 0;
 	neg_words = 0
@@ -78,14 +79,44 @@ def calculate_sentiment(text):
 				num -= 1
 				neg_words+=1
 	score = int(basic_sentiment(pos_words, neg_words)*20)
-	isPos = ''
-	if(num>0):
-		isPos = 'Y'
-	if(num==0):
-		isPos = 'O'
-	else:
-		isPos = 'N'
-	return isPos,score
+	#is_pos = sentiment.sentiment(text)
+	is_pos = ""
+	if(score>0):
+		is_pos = "Y"
+	elif(score==0):
+		is_pos = "O"
+	elif(score<0):
+		is_pos = "N"
+
+	if(is_pos == False and score > 0):
+		score = score * -1
+	elif(is_pos == True and score < 0):
+		score = score * -1
+	return is_pos,score
+	
+def sentiment_three(text):
+	num = 0
+	pos_words = 0;
+	neg_words = 0
+	for word in text.split():
+		poslines = open('words/positive.txt').read().splitlines()
+		for line in poslines:
+			if(word == line):
+				num += 1
+				pos_words+=1
+		neglines = open('words/negative.txt.').read().splitlines()
+		for line in neglines:
+			if(word == line):
+				num -= 1
+				neg_words+=1
+	score = int(basic_sentiment(pos_words, neg_words)*20)
+	is_pos = sentiment.sentiment(text)
+
+	if(is_pos == False and score > 0):
+		score = score * -1
+	elif(is_pos == True and score < 0):
+		score = score * -1
+	return is_pos,score
 		
 def basic_sentiment(p,n):
 	score = math.log10(p+ 0.5)- math.log10(n+0.5)

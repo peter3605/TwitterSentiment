@@ -14,10 +14,10 @@ from datetime import datetime
 
 
 #consumer key, consumer secret, access token, access secret.
-consumer_key="LNQrdS2U0HLL5J0y6MPEVCOkl"
-consumer_secret="47B9ZiHXgPWCg2nyGjWQXbLULHIqEJVOVcAGK59ahLdtXm2N05"
-access_token="2827582612-YqwOL4w56tc4DApnvqbviiMTMGP1hKHoU3wgWTo"
-access_token_secret="HOHTtdWQqBhMAXfzGT12ci23YtX1uwjr4U0PKbjqgyumK"
+consumer_key = "LNQrdS2U0HLL5J0y6MPEVCOkl"
+consumer_secret = "47B9ZiHXgPWCg2nyGjWQXbLULHIqEJVOVcAGK59ahLdtXm2N05"
+access_token = "2827582612-YqwOL4w56tc4DApnvqbviiMTMGP1hKHoU3wgWTo"
+access_token_secret = "HOHTtdWQqBhMAXfzGT12ci23YtX1uwjr4U0PKbjqgyumK"
 
 #on_data is called for every data set that comes through the twitter stream
 class myListener(tweepy.StreamListener):
@@ -26,15 +26,23 @@ class myListener(tweepy.StreamListener):
 		if 'text' in tweet:
 			text = sa.process_tweet_text(tweet['text'])
 			language = calculate_languages_ratios(text)
-			#add tweet to database
 			if(language):
 				#get sentiment score
-				is_pos,score = sa.import_score(text)
+				is_pos = ""
+				score = 0
+				if(algorithm_num == 1):
+					is_pos,score = sa.sentiment_one(text)
+				elif(algorithm_num == 2):
+					is_pos,score = sa.sentiment_two(text)
+				elif(algorithm_num == 3):
+					is_pos, score = sa.sentiment_three(text)
+					
 				
-				add_tweet_to_list(text,is_pos)
+				#add tweets to text files
+				add_tweet_to_list(text,is_pos, score)
 				
 				#insert tweet info into database
-				mydb.insert_tweet_info(tweet['id'],tweet['user']['id'],tweet['created_at'],text,is_pos,score,key)
+				#mydb.insert_tweet_info(tweet['id'],tweet['user']['id'],tweet['created_at'],text,is_pos,score,key)
 				
 				#insert sentiment score into data.txt
 				file = open('data.txt','a')
@@ -46,7 +54,7 @@ class myListener(tweepy.StreamListener):
 	def on_error(self, status):
 		print ('ERROR - '+str(status))
 
-def add_tweet_to_list(text,is_pos):
+def add_tweet_to_list(text,is_pos,score):
 	if(is_pos == 'Y'):
 		pos_tweets = []
 		with open("words/positive_tweets.txt", "rb") as myFile:
@@ -61,6 +69,14 @@ def add_tweet_to_list(text,is_pos):
 		neg_tweets.append((text,'negative'))
 		with open("words/negative_tweets.txt", "wb") as myFile:
 			pickle.dump(neg_tweets, myFile)
+	elif(is_pos == "O"):
+		if(score > 0):
+			add_tweet_to_list(text, 'Y', score)
+		elif(score < 0 or score == 0) :
+			add_tweet_to_list(text, 'N', score)
+
+			
+		
 		
 #log into twitter api and set up the twitter stream		
 def get_twitter_data(keyword):
@@ -71,10 +87,14 @@ def get_twitter_data(keyword):
 
 	streamListener = myListener()
 	myStream = tweepy.Stream(auth=api.auth, listener=streamListener)
-	myStream.filter(track = keyword)
+	if(keyword == "*"):
+		print("HELLO")
+		myStream.sample()
+	else:
+		myStream.filter(track = keyword)
 		
 		
-#returns which ever language makes up the largest ratio of the text parameter
+#returns true if the text passed to this method is mostly english
 def calculate_languages_ratios(text):
 	languages_ratios = {}
 	
@@ -103,13 +123,18 @@ def calculate_languages_ratios(text):
 		
 		
 		
-def main(keyword):
+def start(keyword, num):
+	global algorithm_num
+	algorithm_num = num
 	#create a string of all the search terms
 	global key 
 	key = ""
-	for k in keyword:
-		key += (k+", ")
-	key = key[:len(key)-2]
+	if(len(keyword) == 0):
+		key = "*"
+	else:
+		for k in keyword:
+			key += (k+" ")
+		key = key[:len(key)-1]
 	
 	#add the search terms to the first line of data.txt
 	open("data.txt","w").close()
@@ -119,11 +144,11 @@ def main(keyword):
 	file.close()
 	
 	#connect to database
-	global mydb
-	mydb = Database()
+	#global mydb
+	#mydb = Database()
 	
 	#stream tweets
-	get_twitter_data(keyword)
+	get_twitter_data(key,)
 	
 	
 if __name__ == '__main__':
@@ -132,5 +157,5 @@ if __name__ == '__main__':
 	for arg in sys.argv:
 		if(arg.isalnum()):
 			args.append(arg)
-	main(args)
+	start(args)
 	
