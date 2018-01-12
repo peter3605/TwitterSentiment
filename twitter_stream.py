@@ -88,7 +88,6 @@ def get_twitter_data(keyword):
 	streamListener = myListener()
 	myStream = tweepy.Stream(auth=api.auth, listener=streamListener)
 	if(keyword == "*"):
-		print("HELLO")
 		myStream.sample()
 	else:
 		myStream.filter(track = keyword)

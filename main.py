@@ -33,6 +33,7 @@ class GUI:
 		
 	def run_graph(self):
 		os.system('graph.py')
+		self.text_field.delete(0, 'end')
 		
 	def run_stream(self):
 		input = self.text_field.get()
@@ -42,7 +43,7 @@ class GUI:
 	def enter_button_event(self):
 		t = Thread(target=self.run_graph, args=())
 		t.start()
-		self.text_field.delete(0, 'end')
+
 		t1 = Thread(target = self.run_stream, args = ())
 		t1.start()
 		
