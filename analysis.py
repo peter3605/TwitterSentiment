@@ -47,22 +47,6 @@ def process_tweet_text(text):
 		string += (word + " ")
 	return string
 	
-def sentiment_two(text):
-	url = ' http://text-processing.com/api/sentiment/'
-	dataLoad = {'text':text}
-	response = requests.post(url,data = dataLoad)
-	result = ast.literal_eval(response.content.decode("utf-8"))
-	label = result['label']
-	score = result['probability'][label]
-	is_pos = 'O'
-	if(label == 'neg'):
-		score = score * -1
-		is_pos = 'N'
-	elif(label == 'pos'):
-		is_pos = 'Y'
-	return is_pos,int(score*20)
-	
-	
 def sentiment_one(text):
 	num = 0
 	pos_words = 0;
@@ -78,8 +62,8 @@ def sentiment_one(text):
 			if(word == line):
 				num -= 1
 				neg_words+=1
-	score = int(basic_sentiment(pos_words, neg_words)*20)
-	#is_pos = sentiment.sentiment(text)
+	score = math.log10(pos_words+ 0.5)- math.log10(neg_words+0.5)
+
 	is_pos = ""
 	if(score>0):
 		is_pos = "Y"
@@ -87,11 +71,21 @@ def sentiment_one(text):
 		is_pos = "O"
 	elif(score<0):
 		is_pos = "N"
-
-	if(is_pos == False and score > 0):
+	return is_pos,score
+	
+def sentiment_two(text):
+	url = ' http://text-processing.com/api/sentiment/'
+	dataLoad = {'text':text}
+	response = requests.post(url,data = dataLoad)
+	result = ast.literal_eval(response.content.decode("utf-8"))
+	label = result['label']
+	score = result['probability'][label]
+	is_pos = 'O'
+	if(label == 'neg'):
 		score = score * -1
-	elif(is_pos == True and score < 0):
-		score = score * -1
+		is_pos = 'N'
+	elif(label == 'pos'):
+		is_pos = 'Y'
 	return is_pos,score
 	
 def sentiment_three(text):
@@ -109,7 +103,7 @@ def sentiment_three(text):
 			if(word == line):
 				num -= 1
 				neg_words+=1
-	score = int(basic_sentiment(pos_words, neg_words)*20)
+	score = math.log10(pos_words+ 0.5)- math.log10(neg_words+0.5)
 	is_pos = sentiment.sentiment(text)
 
 	if(is_pos == False and score > 0):
@@ -117,8 +111,3 @@ def sentiment_three(text):
 	elif(is_pos == True and score < 0):
 		score = score * -1
 	return is_pos,score
-		
-def basic_sentiment(p,n):
-	score = math.log10(p+ 0.5)- math.log10(n+0.5)
-	return score
-	

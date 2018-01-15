@@ -24,12 +24,13 @@ if __name__ == '__main__':
 		for line in lines:
 			if(x>=2):
 				try:
-					total += int(line)
+					score = float(line)
+					total += score
 				except:
 					continue
 				fig.suptitle("start time: "+lines[0]+"\n"+"search terms: "+lines[1]+"\n"+"number of tweets: "+str(x-1)+"\n"+"average sentiment score: "+str(format((total/x),".4f")))
 				xs.append(x)
-				ys.append(line)
+				ys.append(score)
 			x+=1
 		ax.clear()
 		ax.plot(xs, ys)

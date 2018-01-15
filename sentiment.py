@@ -1,5 +1,6 @@
 import pickle
 import nltk
+import sys
 
 
 def get_word_features(wordlist):
@@ -31,19 +32,27 @@ def sentiment(tweet):
 				  
 				  
 	tweets = []
+	
 	for (words, sentiment) in pos_tweets + neg_tweets:
 		words_filtered = [e.lower() for e in words.split() if len(e) >= 3] 
 		tweets.append((words_filtered, sentiment)) 
+		
 	word_features = get_word_features(get_words_in_tweets(tweets))	 
 	
 	training_set = nltk.classify.apply_features(extract_features, tweets)
-	
+
 	classifier = nltk.NaiveBayesClassifier.train(training_set)
-	
+
 	result = classifier.classify(extract_features(tweet.split()))
-	#print(result)
+
 	return result 
 
+if __name__ == '__main__':
+	text = ""
+	for arg in sys.argv:
+		text += arg
+		
+	sentiment(text)
 	
 		
 		

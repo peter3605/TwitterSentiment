@@ -11,7 +11,7 @@ class GUI:
 		self.window.geometry("500x300")
 		self.window.wm_iconbitmap("logo.ico")
 
-		self.label = tkinter.Label(window, text="Please insert search terms - they need to be separated by spaces")
+		self.label = tkinter.Label(window, text="Enter search terms - they need to be separated by spaces")
 		self.label.pack(anchor='center')
 		
 		self.text_field = tkinter.Entry(window, bd =5)
