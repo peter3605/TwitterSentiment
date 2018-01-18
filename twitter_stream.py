@@ -42,7 +42,7 @@ class myListener(tweepy.StreamListener):
 				add_tweet_to_list(text,is_pos, score)
 				
 				#insert tweet info into database
-				#mydb.insert_tweet_info(tweet['id'],tweet['user']['id'],tweet['created_at'],text,is_pos,score,key)
+				mydb.insert_tweet_info(tweet['id'],tweet['user']['id'],tweet['created_at'],text,is_pos,score,key)
 				
 				#insert sentiment score into data.txt
 				file = open('data.txt','a')
@@ -143,8 +143,8 @@ def start(keyword, num):
 	file.close()
 	
 	#connect to database
-	#global mydb
-	#mydb = Database()
+	global mydb
+	mydb = Database()
 	
 	#stream tweets
 	get_twitter_data(key,)
@@ -156,5 +156,5 @@ if __name__ == '__main__':
 	for arg in sys.argv:
 		if(arg.isalnum()):
 			args.append(arg)
-	start(args)
+	start(args,2)
 	

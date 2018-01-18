@@ -31,5 +31,4 @@ class Database():
 			for row in grabbed :
 				data.append( row[0])
 				is_pos.append(row[1])
-		for text in data:
-			print(text)
+		return data,is_pos
