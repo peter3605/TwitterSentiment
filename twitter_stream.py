@@ -42,7 +42,7 @@ class myListener(tweepy.StreamListener):
 				add_tweet_to_list(text,is_pos, score)
 				
 				#insert tweet info into database
-				mydb.insert_tweet_info(tweet['id'],tweet['user']['id'],tweet['created_at'],text,is_pos,score,key)
+				#mydb.insert_tweet_info(tweet['id'],tweet['user']['id'],tweet['created_at'],text,is_pos,score,key)
 				
 				#insert sentiment score into data.txt
 				file = open('data.txt','a')
