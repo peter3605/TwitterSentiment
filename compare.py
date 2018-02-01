@@ -1,5 +1,5 @@
 import analysis
-data = open('test_data.txt','r').read()
+data = open('data_sets/test_data.txt','r').read()
 lines = data.split('\n')
 
 sentiment_one = 0;
@@ -17,7 +17,7 @@ for line in lines:
 		is_pos1, num1 = analysis.sentiment_one(str(tweet))
 		if(is_pos1 == score):
 			sentiment_one += 1
-
+		
 		
 		is_pos2, num2 = analysis.sentiment_two(str(tweet))
 		if(is_pos2 == score):

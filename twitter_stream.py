@@ -55,25 +55,22 @@ class myListener(tweepy.StreamListener):
 		print ('ERROR - '+str(status))
 
 def add_tweet_to_list(text,is_pos,score):
-	if(is_pos == 'Y'):
+	"""if(is_pos == 'Y'):
 		pos_tweets = []
 		with open("words/positive_tweets.txt", "rb") as myFile:
 			pos_tweets = pickle.load(myFile)
 		pos_tweets.append((text,'positive'))	
 		with open("words/positive_tweets.txt", "wb") as myFile:
-			pickle.dump(pos_tweets, myFile)
-	elif(is_pos == 'N'):
+			pickle.dump(pos_tweets, myFile)"""
+	if(is_pos == 'N'):
 		neg_tweets = []
-		with open("words/negative_tweets.txt", "rb") as myFile:
+		with open("data_sets/negative-50kb.txt", "rb") as myFile:
 			neg_tweets = pickle.load(myFile)
 		neg_tweets.append((text,'negative'))
-		with open("words/negative_tweets.txt", "wb") as myFile:
-			pickle.dump(neg_tweets, myFile)
-	elif(is_pos == "O"):
-		if(score > 0):
-			add_tweet_to_list(text, 'Y', score)
-		elif(score < 0 or score == 0) :
-			add_tweet_to_list(text, 'N', score)
+		with open("data_sets/negative-50kb.txt", "wb") as myFile3:
+			pickle.dump(neg_tweets, myFile3)
+			
+
 
 			
 		
