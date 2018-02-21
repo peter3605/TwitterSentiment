@@ -32,19 +32,23 @@ def calculate_accuracy(pos_data_set,neg_data_set):
 
 accuracy_score = []
 computation_time = []
-positive_data_sets = ["data_sets/positive-10kb.txt","data_sets/positive-20kb.txt","data_sets/positive-30kb.txt","data_sets/positive-40kb.txt","data_sets/positive-50kb.txt"]
-negative_data_sets = ["data_sets/negative-10kb.txt","data_sets/negative-20kb.txt","data_sets/negative-30kb.txt","data_sets/negative-40kb.txt","data_sets/negative-50kb.txt"]
 
-for i in range(0,len(positive_data_sets)-1):
-	print(i)
+for i in range(0,10):
+	size = (i+1)*10
+	print(str(size)+" kb")
+	
 	start_time = time.time()
-	score = calculate_accuracy(positive_data_sets[i],negative_data_sets[i])
+	
+	pos = "data_sets/positive-"+str(size)+"kb.txt"
+	neg = "data_sets/negative-"+str(size)+"kb.txt"
+	
+	score = calculate_accuracy(pos,neg)
 	end_time = time.time()
 	
 	computation_time.append(end_time - start_time)
 	accuracy_score.append(score)
 	
-	print("time - "+str(computation_time[i])+" seconds : score - "+str(accuracy_score[i]))
+	print("time - "+str(computation_time[i])+" seconds : accuracy - "+str(accuracy_score[i]))
 	print("")
 	
 	
