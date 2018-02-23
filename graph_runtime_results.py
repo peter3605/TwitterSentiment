@@ -1,13 +1,10 @@
 from matplotlib import pyplot as plt
 from matplotlib import style
 
-def accuracy_vs_size():
+def accuracy_vs_size(x,y):
 	style.use('ggplot')
 
-	x = [0,1,2,3]
-	y = [6,9,3,4]
-
-	plt.plot(x,y,linewidth=5)
+	plt.plot(x,y,linewidth=3)
 
 
 	plt.title('Accuracy versus Test Data Size')
@@ -16,13 +13,10 @@ def accuracy_vs_size():
 
 	plt.show()
 
-def time_vs_size():
+def time_vs_size(x,y):
 	style.use('ggplot')
 
-	x = [0,1,2,3]
-	y = [8,8,8,8]
-
-	plt.plot(x,y,linewidth=5)
+	plt.plot(x,y,linewidth=3)
 
 
 	plt.title('Time versus Test Data Size')
@@ -31,21 +25,9 @@ def time_vs_size():
 
 	plt.show()
 
-def accuracy_vs_time():
-	style.use('ggplot')
-
-	x = [0,1,2,3]
-	y = [5,4,3,2]
-
-	plt.plot(x,y,linewidth=5)
-
-
-	plt.title('Accuracy versus Time')
-	plt.ylabel('Accuracy(percentage)')
-	plt.xlabel('time(in seconds)')
-
-	plt.show()
 	
-accuracy_vs_size()
-time_vs_size()
-accuracy_vs_time()
+accuracy = [0.5294,0.5714,0.6471,0.6303,0.6218,0.5882]
+time = [93.27,260.37,516.11,872.47,1245.8372,1723.1116]
+size = [10,20,30,40,50,60]
+accuracy_vs_size(size,accuracy)
+time_vs_size(size,time)

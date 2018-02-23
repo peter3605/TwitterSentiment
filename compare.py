@@ -24,7 +24,7 @@ for line in lines:
 			sentiment_two += 1
 
 		
-		is_pos3, num3 = analysis.sentiment_three(tweet)
+		is_pos3, num3 = analysis.sentiment_three(str(tweet))
 		if(is_pos3 == "positive"):
 			is_pos3 = "Y"
 		else:

@@ -1,5 +1,6 @@
 import sentiment
 import time
+import graph_runtime_results as graph
 
 def calculate_accuracy(pos_data_set,neg_data_set):
 	data = open('data_sets/test_data.txt','r').read()
@@ -29,7 +30,7 @@ def calculate_accuracy(pos_data_set,neg_data_set):
 	final_score = sentiment_score/size
 	return final_score
 
-
+sizes = [10,20,30,40,50,60,70,80,90,100]
 accuracy_score = []
 computation_time = []
 
@@ -49,7 +50,9 @@ for i in range(0,10):
 	accuracy_score.append(score)
 	
 	print("time - "+str(computation_time[i])+" seconds : accuracy - "+str(accuracy_score[i]))
-	print("")
+	print(" ")
+	
+
 	
 	
 

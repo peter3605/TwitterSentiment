@@ -39,7 +39,7 @@ class myListener(tweepy.StreamListener):
 					
 				
 				#add tweets to text files
-				add_tweet_to_list(text,is_pos, score)
+				#add_tweet_to_list(text,is_pos, score)
 				
 				#insert tweet info into database
 				#mydb.insert_tweet_info(tweet['id'],tweet['user']['id'],tweet['created_at'],text,is_pos,score,key)
@@ -61,14 +61,14 @@ def add_tweet_to_list(text,is_pos,score):
 			pos_tweets = pickle.load(myFile)
 		pos_tweets.append((text,'positive'))	
 		with open("words/positive_tweets.txt", "wb") as myFile:
-			pickle.dump(pos_tweets, myFile)"""
-	if(is_pos == 'N'):
+			pickle.dump(pos_tweets, myFile)
+	elif(is_pos == 'N'):
 		neg_tweets = []
-		with open("data_sets/negative-100kb.txt", "rb") as myFile:
+		with open("words/negative_tweets.txt", "rb") as myFile:
 			neg_tweets = pickle.load(myFile)
 		neg_tweets.append((text,'negative'))
-		with open("data_sets/negative-100kb.txt", "wb") as myFile5:
-			pickle.dump(neg_tweets, myFile5)
+		with open("words/negative_tweets.txt", "wb") as myFile:
+			pickle.dump(neg_tweets, myFile)"""
 
 			
 		

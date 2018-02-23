@@ -104,7 +104,7 @@ def sentiment_three(text):
 				num -= 1
 				neg_words+=1
 	score = math.log10(pos_words+ 0.5)- math.log10(neg_words+0.5)
-	is_pos = sentiment.sentiment(text)
+	is_pos = sentiment.sentiment(text,'data_sets/positive-50kb.txt','data_sets/negative-50kb.txt')
 
 	if(is_pos == False and score > 0):
 		score = score * -1
